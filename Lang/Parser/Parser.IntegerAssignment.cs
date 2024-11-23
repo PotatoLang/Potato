@@ -1,52 +1,21 @@
-namespace Potato;
+namespace Potato.Parser;
 
 using AstNodes;
 
-public class Parser
+public partial class Parser
 {
-    private Lexer Lexer => new();
-
-    public PotatoAstNode Parse(IEnumerable<string> sourceCode)
-    {
-        List<PotatoToken> tokens = Lexer.Lexing(sourceCode);
-        return ParseTokens(tokens);
-    }
-
-    private PotatoAstNode ParseTokens(List<PotatoToken> tokens)
-    {
-        PotatoAstNode potatoAstNode = new();
-        for (int actualPosition = 0; actualPosition < tokens.Count; actualPosition++)
-        {
-            switch (tokens[actualPosition].TokenType)
-            {
-                case TokenTypes.Keyword_Var:
-                    (PotatoAstNode node, int continuationPosition) result = CreateAssignmentNode(
-                        actualPosition,
-                        tokens);
-                    actualPosition = result.continuationPosition;
-                    potatoAstNode.Nodes.Add(result.node);
-                    break;
-
-                default:
-                    string msg = "Error at ast node creation.";
-                    throw new PotatoParserException(msg);
-            }
-        }
-        return potatoAstNode;
-    }
-
-    private (PotatoAstNode node, int continuationPosition) CreateAssignmentNode(
+    private (PotatoAstNode Node, int ContinuationPosition) CreateIntegerAssignmentNode(
         int actualReadPosition,
         List<PotatoToken> tokens)
     {
 
-        PotatoToken varToken = tokens[actualReadPosition];
-        if (varToken.TokenType != TokenTypes.Keyword_Var)
+        PotatoToken integerTypeToken = tokens[actualReadPosition];
+        if (integerTypeToken.TokenType != TokenTypes.Keyword_Integer)
         {
-            string msg = $"Unexpected token type: {varToken.TokenType}; " +
-                         $"The token is: {varToken.Value}; " +
-                         $"Expected token was: {TokenTypes.Keyword_Var}; " +
-                         $"Line: {varToken.LineNumber}, character: {actualReadPosition}";
+            string msg = $"Unexpected token type: {integerTypeToken.TokenType}; " +
+                         $"The token is: {integerTypeToken.Value}; " +
+                         $"Expected token was: {TokenTypes.Keyword_Integer}; " +
+                         $"Line: {integerTypeToken.LineNumber}, character: {actualReadPosition}";
             throw new PotatoParserException(msg);
         }
 
@@ -72,7 +41,7 @@ public class Parser
         else
         {
             string msg = $"Expected identifier for value assignment, but haven't received any. " +
-                         $"line: {varToken.LineNumber}, position: {actualReadPosition + 1}";
+                         $"line: {integerTypeToken.LineNumber}, position: {actualReadPosition + 1}";
             throw new PotatoParserException(msg);
         }
 
@@ -92,7 +61,7 @@ public class Parser
         else
         {
             string msg = $"Expected assignment sign (=) for value assignment, but didn't received any. " +
-                         $"Line: {varToken.LineNumber}, position: {actualReadPosition + 2}";
+                         $"Line: {integerTypeToken.LineNumber}, position: {actualReadPosition + 2}";
             throw new PotatoParserException(msg);
         }
 
@@ -112,7 +81,7 @@ public class Parser
         else
         {
             string msg = $"Expected the integer value for integer value assignment, but didn't receive any. " +
-                         $"Line: {varToken.LineNumber}, position: {actualReadPosition + 3}";
+                         $"Line: {integerTypeToken.LineNumber}, position: {actualReadPosition + 3}";
             throw new PotatoParserException(msg);
         }
 
@@ -132,15 +101,16 @@ public class Parser
         else
         {
             string msg = $"Expected semicolon (;) for integer value assignment, but didn't receive any. " +
-                         $"Line: {varToken.LineNumber}, position: {actualReadPosition + 4}";
+                         $"Line: {integerTypeToken.LineNumber}, position: {actualReadPosition + 4}";
             throw new PotatoParserException(msg);
         }
 
         return (
             new PotatoAstNode {
-                Datatype = Datatypes.Int,
+
+                PotatoDatatype = PotatoDatatypes.Integer,
                 VariableName = identifierToken.Value,
-                IntValue = int.Parse(integerValueToken.Value)
+                IntValue = int.Parse(integerValueToken.Value),
             },
             actualReadPosition + 4);
     }
