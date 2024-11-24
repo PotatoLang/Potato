@@ -1,4 +1,4 @@
-namespace Potato;
+namespace Potato.Parser;
 
 public class PotatoParserException : Exception
 {

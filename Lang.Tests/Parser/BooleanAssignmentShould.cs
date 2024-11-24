@@ -8,44 +8,32 @@ using Potato.Parser;
 
 using Parser = Potato.Parser.Parser;
 
-public class IntegerAssignmentShould : TestBase
+public class BooleanAssignmentShould : TestBase
 {
     private readonly Parser _parser = new();
 
     public static IEnumerable<object[]> PositiveCasesTestData()
     {
         yield return new object[] {
-            "Integer identifier = 1;",
+            "Boolean identifier = true;",
             new PotatoAstNode {
                 Nodes = {
                     new PotatoAstNode {
-                        PotatoDatatype = PotatoDatatypes.Integer,
-                        IntValue = 1,
+                        PotatoDatatype = PotatoDatatypes.Boolean,
+                        BooleanValue = true,
                         VariableName = "identifier",
                     },
                 },
             },
         };
         yield return new object[] {
-            "Integer identifier = 1111;",
+            "Boolean identifier = false;",
             new PotatoAstNode {
                 Nodes = {
                     new PotatoAstNode {
-                        PotatoDatatype = PotatoDatatypes.Integer,
-                        IntValue = 1111,
+                        PotatoDatatype = PotatoDatatypes.Boolean,
+                        BooleanValue = false,
                         VariableName = "identifier",
-                    },
-                },
-            },
-        };
-        yield return new object[] {
-            "Integer i = 1111;",
-            new PotatoAstNode {
-                Nodes = {
-                    new PotatoAstNode {
-                        PotatoDatatype = PotatoDatatypes.Integer,
-                        IntValue = 1111,
-                        VariableName = "i",
                     },
                 },
             },
@@ -63,14 +51,16 @@ public class IntegerAssignmentShould : TestBase
 
     public static IEnumerable<object[]> NegativeCasesTestData()
     {
-        yield return new object[] { "i i = 2;", };
-        yield return new object[] { "In i = 2;", };
-        yield return new object[] { "integer i = 2;", };
-        yield return new object[] { "Integer = 2;", };
-        yield return new object[] { "Integer i i = 2;", };
-        yield return new object[] { "Integer i 2;", };
-        yield return new object[] { "Integer ii 2;", };
-        yield return new object[] { "Integer i = 2", };
+        yield return new object[] { "b i = true;", };
+        yield return new object[] { "bo i = false;", };
+        yield return new object[] { "boolean i = true;", };
+        yield return new object[] { "Boolean = 2;", };
+        yield return new object[] { "Boolean i i = true;", };
+        yield return new object[] { "Boolean i true;", };
+        yield return new object[] { "Boolean ii false;", };
+        yield return new object[] { "Boolean i = \"true\";", };
+        yield return new object[] { "Boolean i = \"false\";", };
+        yield return new object[] { "Boolean i = false", };
     }
 
     [Theory]
