@@ -11,9 +11,14 @@ public struct TokenTypes
     public const string Space = " ";
     public const string Sign_Semicolon = ";";
     public const string Sign_DoubleQuote = "\"";
+    public const string Sign_DoubleEquality = "==";
+    public const string Sign_BangEquality = "!=";
+    public const string Sign_Bang = "!";
+    public const string Sign_OpenParentheses = "(";
+    public const string Sign_CloseParentheses = ")";
     public const string Identifier = "identifier";
     public const string Sign_Assignment = "=";
-    public const string Value_Integer = "value_integer";
+    public const string IntegerLiteral = "value_integer";
     public const string Value_String = "value_string";
     public const string Value_Boolean = "value_boolean";
     public const string Value_Double = "value_double";

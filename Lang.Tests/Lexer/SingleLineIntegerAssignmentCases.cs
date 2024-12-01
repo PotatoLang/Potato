@@ -57,7 +57,7 @@ public class SingleLineIntegerAssignmentCases : TestBase
                 new(TokenTypes.Keyword_Integer, 1, ""),
                 new(TokenTypes.Identifier, 1, "integerIdentifier"),
                 new(TokenTypes.Sign_Assignment, 1, ""),
-                new(TokenTypes.Value_Integer, 1, "12"),
+                new(TokenTypes.IntegerLiteral, 1, "12"),
                 new(TokenTypes.Sign_Semicolon, 1, ""),
             },
         };

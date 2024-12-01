@@ -57,7 +57,7 @@ public class SingleLineBooleanAssignmentCases : TestBase
                 new(TokenTypes.Keyword_Boolean, 1, ""),
                 new(TokenTypes.Identifier, 1, "booleanIdentifier"),
                 new(TokenTypes.Sign_Assignment, 1, ""),
-                new(TokenTypes.Value_Integer, 1, "12"),
+                new(TokenTypes.IntegerLiteral, 1, "12"),
                 new(TokenTypes.Sign_Semicolon, 1, ""),
             },
         };

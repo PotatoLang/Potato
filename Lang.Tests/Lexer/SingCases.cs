@@ -40,6 +40,125 @@ public class SignCases : TestBase
                 new(TokenTypes.Sign_DoubleQuote, 1, ""),
             },
         };
+        // "==" cases
+        yield return new object[] {
+            "==",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_DoubleEquality, 1, ""),
+            },
+        };
+        yield return new object[] {
+            "===",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_DoubleEquality, 1, ""),
+                new(TokenTypes.Sign_Assignment, 1, ""),
+            },
+        };
+        // "!="
+        yield return new object[] {
+            "!=",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_BangEquality, 1, ""),
+            },
+        };
+        yield return new object[] {
+            "!==",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_BangEquality, 1, ""),
+                new(TokenTypes.Sign_Assignment, 1, ""),
+            },
+        };
+        yield return new object[] {
+            "=!==",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_Assignment, 1, ""),
+                new(TokenTypes.Sign_BangEquality, 1, ""),
+                new(TokenTypes.Sign_Assignment, 1, ""),
+            },
+        };
+        // "(" and ")" cases
+        yield return new object[] {
+            "(",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_OpenParentheses, 1, ""),
+            },
+        };
+        yield return new object[] {
+            "((",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_OpenParentheses, 1, ""),
+                new(TokenTypes.Sign_OpenParentheses, 1, ""),
+            },
+        };
+        yield return new object[] {
+            "=(",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_Assignment, 1, ""),
+                new(TokenTypes.Sign_OpenParentheses, 1, ""),
+            },
+        };
+        yield return new object[] {
+            "(=",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_OpenParentheses, 1, ""),
+                new(TokenTypes.Sign_Assignment, 1, ""),
+            },
+        };
+        yield return new object[] {
+            "= (",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_Assignment, 1, ""),
+                new(TokenTypes.Sign_OpenParentheses, 1, ""),
+            },
+        };
+        yield return new object[] {
+            "( =",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_OpenParentheses, 1, ""),
+                new(TokenTypes.Sign_Assignment, 1, ""),
+            },
+        };
+        yield return new object[] {
+            ")",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_CloseParentheses, 1, ""),
+            },
+        };
+        yield return new object[] {
+            "))",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_CloseParentheses, 1, ""),
+                new(TokenTypes.Sign_CloseParentheses, 1, ""),
+            },
+        };
+        yield return new object[] {
+            "=)",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_Assignment, 1, ""),
+                new(TokenTypes.Sign_CloseParentheses, 1, ""),
+            },
+        };
+        yield return new object[] {
+            ")=",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_CloseParentheses, 1, ""),
+                new(TokenTypes.Sign_Assignment, 1, ""),
+            },
+        };
+        yield return new object[] {
+            "= )",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_Assignment, 1, ""),
+                new(TokenTypes.Sign_CloseParentheses, 1, ""),
+            },
+        };
+        yield return new object[] {
+            ") =",
+            new List<PotatoToken> {
+                new(TokenTypes.Sign_CloseParentheses, 1, ""),
+                new(TokenTypes.Sign_Assignment, 1, ""),
+            },
+        };
     }
 
     [Theory]

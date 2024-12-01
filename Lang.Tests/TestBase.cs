@@ -4,6 +4,7 @@ public class TestBase
 {
 
     protected readonly Potato.Lexer.Lexer Lexer = new();
+    protected readonly Potato.Parser.Parser Parser = new();
 
     protected IEnumerable<string> ReadTestData(string multilineTestString)
     {

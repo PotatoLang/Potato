@@ -17,6 +17,7 @@ public class Lexer
             for (int i = 0; i < oneLineSourceCode.ToCharArray().Length; i++)
             {
                 int actualPosition = i;
+                int nextPosition = i + 1;
 
                 // the assumption is that when a string value is created there are at lest 2 " characters in line
                 // the first one switches the lexerMode and the lexer puts everything in a single value
@@ -57,19 +58,39 @@ public class Lexer
                     continue;
                 }
 
+                // when the actual char is "!" and the following is "=" ==> tokenize
+                // when the actual char is "=" and the following is "=" ==> tokenize
+                if (actualToken.Length == 0 && nextPosition <= oneLineSourceCode.Length - 1)
+                {
+                    if (oneLineSourceCode[actualPosition].ToString() == TokenTypes.Sign_Bang
+                     && oneLineSourceCode[nextPosition].ToString() == TokenTypes.Sign_Assignment
+                     || oneLineSourceCode[actualPosition].ToString() == TokenTypes.Sign_Assignment
+                     && oneLineSourceCode[nextPosition].ToString() == TokenTypes.Sign_Assignment)
+                    {
+                        actualToken.Append(oneLineSourceCode[actualPosition])
+                                   .Append(oneLineSourceCode[nextPosition]);
+                        tokens.Add(Tokenize(actualToken.ToString(), lineNumber));
+                        // we move the pointer ahead after the second char.
+                        i = nextPosition;
+                        actualToken.Clear();
+                        continue;
+                    }
+                }
+
                 // if the actual token is ";" it will cause the following:
                 // the already populated actualToken will be tokenized
                 // the ";" character also will be tokenized
-                if (oneLineSourceCode[actualPosition].ToString() == TokenTypes.Sign_Semicolon)
+                if (oneLineSourceCode[actualPosition].ToString() == TokenTypes.Sign_Semicolon
+                 || oneLineSourceCode[actualPosition].ToString() == TokenTypes.Sign_Assignment
+                 || oneLineSourceCode[actualPosition].ToString() == TokenTypes.Sign_OpenParentheses
+                 || oneLineSourceCode[actualPosition].ToString() == TokenTypes.Sign_CloseParentheses)
                 {
                     if (actualToken.Length > 0)
                     {
                         tokens.Add(Tokenize(actualToken.ToString(), lineNumber));
                         actualToken.Clear();
                     }
-                    tokens.Add(
-                        Tokenize(oneLineSourceCode[actualPosition].ToString(), lineNumber)
-                    );
+                    tokens.Add(Tokenize(oneLineSourceCode[actualPosition].ToString(), lineNumber));
                     continue;
                 }
 
@@ -110,7 +131,7 @@ public class Lexer
 
         if (IsNumber(tokenCandidate))
         {
-            return new PotatoToken(TokenTypes.Value_Integer, lineNumber, tokenCandidate);
+            return new PotatoToken(TokenTypes.IntegerLiteral, lineNumber, tokenCandidate);
         }
 
         switch (tokenCandidate)
@@ -138,6 +159,18 @@ public class Lexer
 
             case TokenTypes.Sign_DoubleQuote:
                 return new PotatoToken(TokenTypes.Sign_DoubleQuote, lineNumber, "");
+
+            case TokenTypes.Sign_BangEquality:
+                return new PotatoToken(TokenTypes.Sign_BangEquality, lineNumber, "");
+
+            case TokenTypes.Sign_DoubleEquality:
+                return new PotatoToken(TokenTypes.Sign_DoubleEquality, lineNumber, "");
+
+            case TokenTypes.Sign_OpenParentheses:
+                return new PotatoToken(TokenTypes.Sign_OpenParentheses, lineNumber, "");
+
+            case TokenTypes.Sign_CloseParentheses:
+                return new PotatoToken(TokenTypes.Sign_CloseParentheses, lineNumber, "");
 
             default:
                 return new PotatoToken(TokenTypes.Identifier, lineNumber, tokenCandidate);
