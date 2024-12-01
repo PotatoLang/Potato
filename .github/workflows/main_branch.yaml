@@ -36,6 +36,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setting up Dotnet ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
+
       - run: dotnet restore Potato.sln
 
       - run: dotnet build Potato.sln
