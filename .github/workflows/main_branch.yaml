@@ -1,0 +1,43 @@
+name: Main Branch Build
+run-name: Main Branch Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  debug:
+    name: Debug
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "============="
+          echo "=== Debug ==="
+          echo "============="
+          echo "github ref: " ${{ vars.GITHUB_REF }}
+          echo "dotnet version: " ${{ vars.DOTNET_VERSION }}
+          echo "event name: " ${{ github.event_name }}
+
+  main_branch:
+    name: Main Branch Build
+    runs-on: ubuntu-latest
+    needs: debug
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      pages: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: dotnet restore Potato.sln
+
+      - run: dotnet build Potato.sln
+
+      - run: dotnet test Potato.sln
