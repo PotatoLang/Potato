@@ -2,8 +2,14 @@ namespace Potato.Tests.Lexer;
 
 using FluentAssertions;
 
+using Xunit.Abstractions;
+
 public class KeywordCases : TestBase
 {
+    public KeywordCases(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+    {
+    }
+
     public static IEnumerable<object[]> TestData()
     {
         // String

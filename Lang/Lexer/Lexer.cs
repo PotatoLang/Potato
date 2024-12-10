@@ -2,8 +2,25 @@ namespace Potato.Lexer;
 
 using System.Text;
 
+using Microsoft.Extensions.Logging;
+
+using Xunit.Abstractions;
+
 public class Lexer
 {
+
+    private readonly ILogger _logger;
+
+    public Lexer(ITestOutputHelper testOutputHelper)
+    {
+        _logger = LoggerFactory.Create(o => { o.AddDebug(); }).CreateLogger(nameof(Lexer));
+    }
+
+    public Lexer()
+    {
+        _logger = LoggerFactory.Create(o => { o.AddConsole(); }).CreateLogger(nameof(Lexer));
+    }
+
     public List<PotatoToken> Lexing(IEnumerable<string> sourceCode)
     {
         List<PotatoToken> tokens = [];
@@ -171,6 +188,18 @@ public class Lexer
 
             case TokenTypes.Sign_CloseParentheses:
                 return new PotatoToken(TokenTypes.Sign_CloseParentheses, lineNumber, "");
+
+            case TokenTypes.Sign_Addition:
+                return new PotatoToken(TokenTypes.Sign_Addition, lineNumber, "");
+
+            case TokenTypes.Sign_Subtraction:
+                return new PotatoToken(TokenTypes.Sign_Subtraction, lineNumber, "");
+
+            case TokenTypes.Sign_Multiplication:
+                return new PotatoToken(TokenTypes.Sign_Multiplication, lineNumber, "");
+
+            case TokenTypes.Sign_Division:
+                return new PotatoToken(TokenTypes.Sign_Division, lineNumber, "");
 
             default:
                 return new PotatoToken(TokenTypes.Identifier, lineNumber, tokenCandidate);

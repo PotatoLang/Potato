@@ -2,15 +2,19 @@ namespace Potato.Tests.Parser;
 
 using AstNodes;
 
-using FluentAssertions;
+using Xunit.Abstractions;
 
 public class EqualityExpressionParser : TestBase
 {
-    public static IEnumerable<object[]> CorrectCasesData()
+    public EqualityExpressionParser(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+    {
+    }
+
+    public static IEnumerable<object[]> CorrectCasesData11()
     {
         yield return new object[] {
             "111 == 111;",
-            new PotatoBaseAstNode {
+            new PotatoRootAstNode {
                 Nodes = new List<IPotatoAstNode> {
                     new IntegerTypedEqualityExpressionAstNode {
                         RightSide = 111,
@@ -24,21 +28,11 @@ public class EqualityExpressionParser : TestBase
     }
 
     [Theory]
-    [MemberData(nameof(CorrectCasesData))]
-    public void CorrectCases(string input, PotatoBaseAstNode expectedResult)
+    [MemberData(nameof(CorrectCasesData11))]
+    public void CorrectCases(string input, PotatoRootAstNode expectedResult)
     {
         IEnumerable<string> sourceCode = ReadTestData(input);
-        PotatoBaseAstNode result = Parser.Parse(sourceCode);
-
-        result.NodeType.Should().Be(expectedResult.NodeType);
-        result.Nodes[0].Should().BeOfType<IntegerTypedEqualityExpressionAstNode>();
-        IntegerTypedEqualityExpressionAstNode resultNode = (IntegerTypedEqualityExpressionAstNode)result.Nodes[0];
-        IntegerTypedEqualityExpressionAstNode expectedNode =
-            (IntegerTypedEqualityExpressionAstNode)expectedResult.Nodes[0];
-        resultNode.RightSide.Should().Be(expectedNode.RightSide);
-        resultNode.LeftSide.Should().Be(expectedNode.LeftSide);
-        resultNode.Result.Should().Be(expectedNode.Result);
-        resultNode.Operation.Should().Be(expectedNode.Operation);
-        resultNode.NodeType.Should().Be(expectedNode.NodeType);
+        PotatoRootAstNode result = Parser.Parse(sourceCode);
+        CheckResult(result, expectedResult);
     }
 }

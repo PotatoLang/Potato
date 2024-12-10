@@ -32,7 +32,7 @@ public class PotatoExpressionParser
     public (IPotatoAstNode ExpressionNodes, int ContinuationPosition) ParseExpressions(
         List<PotatoToken> tokens, int position)
     {
-        PotatoBaseAstNode nodes = new();
+        PotatoRootAstNode nodes = new();
         (IPotatoAstNode EqualityExpressionNode, int ContinuationAfterEquality) equalityExpressions =
             ParseEqualityExpression(tokens, position);
         return equalityExpressions;

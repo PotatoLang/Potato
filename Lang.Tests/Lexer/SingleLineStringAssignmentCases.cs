@@ -2,8 +2,14 @@ namespace Potato.Tests.Lexer;
 
 using FluentAssertions;
 
+using Xunit.Abstractions;
+
 public class SingleLineStringAssignmentCases : TestBase
 {
+    public SingleLineStringAssignmentCases(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+    {
+    }
+
     public static IEnumerable<object[]> TestData()
     {
         yield return new object[] {
