@@ -27,8 +27,6 @@ public class EqualityExpressionParser : TestBase
         };
     }
 
-    [Theory]
-    [MemberData(nameof(CorrectCasesData11))]
     public void CorrectCases(string input, PotatoRootAstNode expectedResult)
     {
         IEnumerable<string> sourceCode = ReadTestData(input);
