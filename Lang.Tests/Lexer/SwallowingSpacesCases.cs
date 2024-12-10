@@ -2,8 +2,14 @@ namespace Potato.Tests.Lexer;
 
 using FluentAssertions;
 
+using Xunit.Abstractions;
+
 public class SwallowingSpacesCases : TestBase
 {
+    public SwallowingSpacesCases(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+    {
+    }
+
     public static IEnumerable<object[]> TestData()
     {
         yield return new object[] {

@@ -2,8 +2,14 @@ namespace Potato.Tests.Lexer;
 
 using FluentAssertions;
 
-public class SingleLineIntegerAssignmentCases : TestBase
+using Xunit.Abstractions;
+
+public class IntegerAssignmentCasesSingleLine : TestBase
 {
+    public IntegerAssignmentCasesSingleLine(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+    {
+    }
+
     public static IEnumerable<object[]> TestData()
     {
         yield return new object[] {
@@ -57,7 +63,7 @@ public class SingleLineIntegerAssignmentCases : TestBase
                 new(TokenTypes.Keyword_Integer, 1, ""),
                 new(TokenTypes.Identifier, 1, "integerIdentifier"),
                 new(TokenTypes.Sign_Assignment, 1, ""),
-                new(TokenTypes.Value_Integer, 1, "12"),
+                new(TokenTypes.IntegerLiteral, 1, "12"),
                 new(TokenTypes.Sign_Semicolon, 1, ""),
             },
         };

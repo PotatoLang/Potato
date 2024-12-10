@@ -4,54 +4,51 @@ using AstNodes;
 
 using Lexer;
 
+using Microsoft.Extensions.Logging;
+
+using Xunit.Abstractions;
+
 public partial class Parser
 {
-    private Lexer Lexer => new();
 
-    public PotatoAstNode Parse(IEnumerable<string> sourceCode)
+    private readonly ILogger _logger;
+
+    private readonly Lexer Lexer;
+    private readonly int position = 0;
+
+    public Parser(ITestOutputHelper testOutputHelper)
+    {
+        _logger = LoggerFactory.Create(o => { o.AddProvider(new XUnitLoggerProvider(testOutputHelper)); })
+                               .CreateLogger<Parser>();
+
+        Lexer = new Lexer(testOutputHelper);
+    }
+
+    public Parser()
+    {
+        _logger = LoggerFactory.Create(o => { o.AddConsole(); })
+                               .CreateLogger<Parser>();
+    }
+
+    public PotatoRootAstNode Parse(IEnumerable<string> sourceCode)
     {
         List<PotatoToken> tokens = Lexer.Lexing(sourceCode);
         return ParseTokens(tokens);
     }
 
-    private PotatoAstNode ParseTokens(List<PotatoToken> tokens)
+    private PotatoRootAstNode ParseTokens(List<PotatoToken> tokens)
     {
-        PotatoAstNode potatoAstNode = new();
-        for (int actualPosition = 0; actualPosition < tokens.Count; actualPosition++)
-        {
-            switch (tokens[actualPosition].TokenType)
-            {
-                case TokenTypes.Keyword_Integer:
-                    (PotatoAstNode Node, int ContinuationPosition) integerAssignmentNode = CreateIntegerAssignmentNode(
-                        actualPosition,
-                        tokens);
-                    actualPosition = integerAssignmentNode.ContinuationPosition;
-                    potatoAstNode.Nodes.Add(integerAssignmentNode.Node);
-                    break;
+        PotatoRootAstNode potatoRootRootNode = new();
 
-                case TokenTypes.Keyword_Boolean:
-                    (PotatoAstNode Node, int ContinuationPosition) booleanAssignmentNode = CreateBooleanAssignmentNode(
-                        actualPosition,
-                        tokens);
-                    actualPosition = booleanAssignmentNode.ContinuationPosition;
-                    potatoAstNode.Nodes.Add(booleanAssignmentNode.Node);
-                    break;
+        (IAssignmentStatementNode VariableStatementNodes, int ContinuationPosition) variableStatements =
+            ParseVariableAssignments(tokens, position);
+        potatoRootRootNode.VariableAssignments.Add(variableStatements.VariableStatementNodes);
 
-                case TokenTypes.Keyword_String:
-                    (PotatoAstNode Node, int ContinuationPosition) stringAssignmentNode = CreateStringAssignmentNode(
-                        actualPosition,
-                        tokens);
-                    actualPosition = stringAssignmentNode.ContinuationPosition;
-                    potatoAstNode.Nodes.Add(stringAssignmentNode.Node);
-                    break;
-
-                default:
-                    string msg = $"The character is not one can start an assignment: " +
-                                 $"Character: {tokens[actualPosition].Value} " +
-                                 $"at {tokens[actualPosition].LineNumber}.";
-                    throw new PotatoParserException(msg);
-            }
-        }
-        return potatoAstNode;
+        return potatoRootRootNode;
     }
+}
+
+public interface IPotatoParser
+{
+    PotatoRootAstNode Parse();
 }
