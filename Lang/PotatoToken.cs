@@ -1,3 +1,3 @@
 namespace Potato;
 
-public record PotatoToken(string TokenType, int LineNumber, string Value);
+public record PotatoToken(TokenTypesEnum TokenType, string TokenStringLiteral, int LineNumber, string Value);

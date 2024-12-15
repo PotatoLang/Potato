@@ -4,7 +4,7 @@ public class InFixExpressionNode : IFixExpressionNode
 {
     public IExpressionNode? LeftSideNode { get; set; }
     public IExpressionNode? RightSideNode { get; set; }
-    public string TokenTypeStringLiteral { get; set; }
+    public TokenTypesEnum TokenType { get; set; }
     public ExpressionNodeType ExpressionNodeType { get; set; } = ExpressionNodeType.Infix;
 }
 
@@ -12,7 +12,7 @@ public interface IFixExpressionNode : IExpressionNode
 {
     IExpressionNode? LeftSideNode { get; set; }
     IExpressionNode? RightSideNode { get; set; }
-    string TokenTypeStringLiteral { get; set; }
+    TokenTypesEnum TokenType { get; set; }
 }
 
 public interface ITypedLiteralValueNode<PotatoType> : ILiteralValueNode
@@ -48,6 +48,14 @@ public class IntegerLiteralExpressionNode : ITypedLiteralValueNode<int>
     public int Value { get; set; }
 
     public ExpressionNodeType ExpressionNodeType { get; set; } = ExpressionNodeType.LiteralValue;
+}
+
+public class StringLiteralExpressionNode : ITypedLiteralValueNode<string>
+{
+    public ExpressionNodeType ExpressionNodeType { get; set; }
+    public string StringValueLiteral { get; set; }
+    public string StringTokenLiteral { get; set; }
+    public string Value { get; set; }
 }
 
 public interface IExpressionNode

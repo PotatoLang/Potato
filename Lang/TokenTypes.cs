@@ -1,5 +1,33 @@
 namespace Potato;
 
+public enum TokenTypesEnum
+{
+
+    Keyword_Boolean_True,
+    Keyword_Boolean_False,
+    Keyword_String,
+    Keyword_Integer,
+    Keyword_Boolean,
+    Keyword_Double,
+    Sign_Semicolon,
+    Sign_DoubleQuote,
+    Sign_DoubleEquality,
+    Sign_BangEquality,
+    Sign_Bang,
+    Sign_OpenParentheses,
+    Sign_CloseParentheses,
+    Sign_Addition,
+    Sign_Subtraction,
+    Sign_Assignment,
+    Sign_Multiplication,
+    Sign_Division,
+    Identifier,
+    IntegerLiteral,
+    StringLiteral,
+    Value_Boolean,
+    Value_Double,
+}
+
 public struct TokenTypes
 {
     public const string Keyword_Boolean_True = "true";
@@ -34,7 +62,17 @@ public struct TokenTypes
     /// </summary>
     public const string IntegerLiteral = "value_integer";
 
-    public const string Value_String = "value_string";
+    /// <summary>
+    ///     Represents chain of characters enclosed by <see cref="Sign_DoubleQuote" />s.
+    ///     <example>
+    ///         <code>
+    /// // the string literal value here is "this is a string literal value"
+    /// String stringIdentifier = "this is a string literal value";
+    /// </code>
+    ///     </example>
+    /// </summary>
+    public const string StringLiteral = "value_string";
+
     public const string Value_Boolean = "value_boolean";
     public const string Value_Double = "value_double";
 }

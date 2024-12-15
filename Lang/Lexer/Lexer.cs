@@ -141,68 +141,68 @@ public class Lexer
     }
 
     private PotatoToken CreateStringTypeValueToken(string value, int lineNumber) =>
-        new(TokenTypes.Value_String, lineNumber, value);
+        new(TokenTypesEnum.StringLiteral, value, lineNumber, value);
 
     private static PotatoToken Tokenize(string tokenCandidate, int lineNumber)
     {
 
         if (IsNumber(tokenCandidate))
         {
-            return new PotatoToken(TokenTypes.IntegerLiteral, lineNumber, tokenCandidate);
+            return new PotatoToken(TokenTypesEnum.IntegerLiteral, tokenCandidate, lineNumber, tokenCandidate);
         }
 
         switch (tokenCandidate)
         {
             case TokenTypes.Keyword_String:
-                return new PotatoToken(TokenTypes.Keyword_String, lineNumber, "");
+                return new PotatoToken(TokenTypesEnum.Keyword_String, tokenCandidate, lineNumber, "");
 
             case TokenTypes.Keyword_Integer:
-                return new PotatoToken(TokenTypes.Keyword_Integer, lineNumber, "");
+                return new PotatoToken(TokenTypesEnum.Keyword_Integer, tokenCandidate, lineNumber, "");
 
             case TokenTypes.Keyword_Boolean:
-                return new PotatoToken(TokenTypes.Keyword_Boolean, lineNumber, "");
+                return new PotatoToken(TokenTypesEnum.Keyword_Boolean, tokenCandidate, lineNumber, "");
 
             case TokenTypes.Keyword_Boolean_True:
-                return new PotatoToken(TokenTypes.Value_Boolean, lineNumber, tokenCandidate);
+                return new PotatoToken(TokenTypesEnum.Value_Boolean, tokenCandidate, lineNumber, tokenCandidate);
 
             case TokenTypes.Keyword_Boolean_False:
-                return new PotatoToken(TokenTypes.Value_Boolean, lineNumber, tokenCandidate);
+                return new PotatoToken(TokenTypesEnum.Value_Boolean, tokenCandidate, lineNumber, tokenCandidate);
 
             case TokenTypes.Sign_Assignment:
-                return new PotatoToken(TokenTypes.Sign_Assignment, lineNumber, "");
+                return new PotatoToken(TokenTypesEnum.Sign_Assignment, tokenCandidate, lineNumber, "");
 
             case TokenTypes.Sign_Semicolon:
-                return new PotatoToken(TokenTypes.Sign_Semicolon, lineNumber, "");
+                return new PotatoToken(TokenTypesEnum.Sign_Semicolon, tokenCandidate, lineNumber, "");
 
             case TokenTypes.Sign_DoubleQuote:
-                return new PotatoToken(TokenTypes.Sign_DoubleQuote, lineNumber, "");
+                return new PotatoToken(TokenTypesEnum.Sign_DoubleQuote, tokenCandidate, lineNumber, "");
 
             case TokenTypes.Sign_BangEquality:
-                return new PotatoToken(TokenTypes.Sign_BangEquality, lineNumber, "");
+                return new PotatoToken(TokenTypesEnum.Sign_BangEquality, tokenCandidate, lineNumber, "");
 
             case TokenTypes.Sign_DoubleEquality:
-                return new PotatoToken(TokenTypes.Sign_DoubleEquality, lineNumber, "");
+                return new PotatoToken(TokenTypesEnum.Sign_DoubleEquality, tokenCandidate, lineNumber, "");
 
             case TokenTypes.Sign_OpenParentheses:
-                return new PotatoToken(TokenTypes.Sign_OpenParentheses, lineNumber, "");
+                return new PotatoToken(TokenTypesEnum.Sign_OpenParentheses, tokenCandidate, lineNumber, "");
 
             case TokenTypes.Sign_CloseParentheses:
-                return new PotatoToken(TokenTypes.Sign_CloseParentheses, lineNumber, "");
+                return new PotatoToken(TokenTypesEnum.Sign_CloseParentheses, tokenCandidate, lineNumber, "");
 
             case TokenTypes.Sign_Addition:
-                return new PotatoToken(TokenTypes.Sign_Addition, lineNumber, "");
+                return new PotatoToken(TokenTypesEnum.Sign_Addition, tokenCandidate, lineNumber, "");
 
             case TokenTypes.Sign_Subtraction:
-                return new PotatoToken(TokenTypes.Sign_Subtraction, lineNumber, "");
+                return new PotatoToken(TokenTypesEnum.Sign_Subtraction, tokenCandidate, lineNumber, "");
 
             case TokenTypes.Sign_Multiplication:
-                return new PotatoToken(TokenTypes.Sign_Multiplication, lineNumber, "");
+                return new PotatoToken(TokenTypesEnum.Sign_Multiplication, tokenCandidate, lineNumber, "");
 
             case TokenTypes.Sign_Division:
-                return new PotatoToken(TokenTypes.Sign_Division, lineNumber, "");
+                return new PotatoToken(TokenTypesEnum.Sign_Division, tokenCandidate, lineNumber, "");
 
             default:
-                return new PotatoToken(TokenTypes.Identifier, lineNumber, tokenCandidate);
+                return new PotatoToken(TokenTypesEnum.Identifier, tokenCandidate, lineNumber, tokenCandidate);
         }
     }
 

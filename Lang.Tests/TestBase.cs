@@ -171,7 +171,7 @@ public class TestBase
                 .Append(infixNode.ExpressionNodeType)
                 .Append(' ')
                 .Append("token type:")
-                .Append(infixNode.TokenTypeStringLiteral)
+                .Append(infixNode.TokenType)
                 .Append('\n')
                 .Append('|')
                 .Append(GenerateDepth(depth))

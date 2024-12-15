@@ -59,8 +59,8 @@ public class PotatoExpressionParser
 
         if (leftHandSideToken.TokenType != rightHandSideToken.TokenType
             // to protect the code from the identifier cases
-         || leftHandSideToken.TokenType == TokenTypes.Identifier &&
-            rightHandSideToken.TokenType == TokenTypes.Identifier)
+         || leftHandSideToken.TokenType == TokenTypesEnum.Identifier &&
+            rightHandSideToken.TokenType == TokenTypesEnum.Identifier)
         {
             // erroring out
         }
