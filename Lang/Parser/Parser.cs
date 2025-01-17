@@ -39,9 +39,8 @@ public partial class Parser
     {
         PotatoRootAstNode potatoRootRootNode = new();
 
-        (IAssignmentStatementNode VariableStatementNodes, int ContinuationPosition) variableStatements =
-            ParseVariableAssignments(tokens, 0);
-        potatoRootRootNode.VariableAssignments.Add(variableStatements.VariableStatementNodes);
+        IAssignmentStatementNode variableStatements = ParseVariableAssignments(tokens, 0);
+        potatoRootRootNode.VariableAssignments.Add(variableStatements);
 
         return potatoRootRootNode;
     }

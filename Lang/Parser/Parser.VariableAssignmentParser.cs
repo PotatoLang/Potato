@@ -15,7 +15,7 @@ using AstNodes;
 /// </summary>
 public partial class Parser
 {
-    private (IAssignmentStatementNode IntegerNode, int ContinuationPosition) CreateIntegerAssignmentAstNodes(
+    private IAssignmentStatementNode CreateIntegerAssignmentAstNodes(
         List<PotatoToken> tokens,
         int position)
     {
@@ -84,15 +84,13 @@ public partial class Parser
 
         // parse the right side of the equal sign where the assignment expressions livea
         List<PotatoToken> tokensPartial = GetTokensUntil(tokens, position + 3, TokenTypesEnum.Sign_Semicolon);
-        (IExpressionNode AssignmentExpressionNode, int ContinuationPosition) variableAssignmentExpression =
+        IExpressionNode variableAssignmentExpression =
             ParseExpressions(tokensPartial);
-        node.VariableExpressionNode = variableAssignmentExpression.AssignmentExpressionNode;
-        return (
-            node,
-            continuationPosition);
+        node.VariableExpressionNode = variableAssignmentExpression;
+        return node;
     }
 
-    public (IAssignmentStatementNode AssignmentStatementNode, int ContinuationPosition) ParseVariableAssignments(
+    public IAssignmentStatementNode ParseVariableAssignments(
         List<PotatoToken> tokens, int position)
     {
         switch (tokens[position].TokenType)
@@ -100,8 +98,8 @@ public partial class Parser
             case TokenTypesEnum.Keyword_Integer:
                 return CreateIntegerAssignmentAstNodes(tokens, position);
 
-            case TokenTypesEnum.Keyword_String:
-                return CreateStringAssignmentAstNode(tokens, position);
+            // case TokenTypesEnum.Keyword_String:
+            //     return CreateStringAssignmentAstNode(tokens, position);
 
             default:
                 ParserHelpers.ThrowParseException($"{nameof(ParseVariableAssignments)}",
@@ -109,10 +107,10 @@ public partial class Parser
                                                   position);
                 break;
         }
-        return (null, position);
+        return null;
     }
 
-    private (IAssignmentStatementNode AssignmentStatementNode, int ContinuationPosition) CreateStringAssignmentAstNode(
+    private IAssignmentStatementNode CreateStringAssignmentAstNode(
         List<PotatoToken> tokens,
         int position)
     {
@@ -190,13 +188,9 @@ public partial class Parser
             continuationPosition,
             TokenTypesEnum.Sign_Semicolon);
 
-        (IExpressionNode AssignmentExpressionNode, int ContinuationPosition) variableAssignmentExpression =
-            ParseExpressions(stringAssignmentExpressionTokens);
-        node.VariableExpressionNode = variableAssignmentExpression.AssignmentExpressionNode;
-        return (
-            node,
-            variableAssignmentExpression.ContinuationPosition);
-
+        IExpressionNode variableAssignmentExpression = ParseExpressions(stringAssignmentExpressionTokens);
+        node.VariableExpressionNode = variableAssignmentExpression;
+        return node;
     }
 
     private List<PotatoToken> GetTokensUntil(List<PotatoToken> tokens, int position, TokenTypesEnum delimiter)

@@ -8,7 +8,6 @@ using Xunit.Abstractions;
 
 public class Lexer
 {
-
     private readonly ILogger _logger;
 
     public Lexer(ITestOutputHelper testOutputHelper)
@@ -140,10 +139,7 @@ public class Lexer
         return tokens;
     }
 
-    private PotatoToken CreateStringTypeValueToken(string value, int lineNumber) =>
-        new(TokenTypesEnum.StringLiteral, value, lineNumber, value);
-
-    private static PotatoToken Tokenize(string tokenCandidate, int lineNumber)
+    private PotatoToken Tokenize(string tokenCandidate, int lineNumber)
     {
 
         if (IsNumber(tokenCandidate))
@@ -187,7 +183,7 @@ public class Lexer
                 return new PotatoToken(TokenTypesEnum.Sign_OpenParentheses, tokenCandidate, lineNumber, "");
 
             case TokenTypes.Sign_CloseParentheses:
-                return new PotatoToken(TokenTypesEnum.Sign_CloseParentheses, tokenCandidate, lineNumber, "");
+                return CreateCloseParenthesesToken(tokenCandidate, lineNumber, "");
 
             case TokenTypes.Sign_Addition:
                 return new PotatoToken(TokenTypesEnum.Sign_Addition, tokenCandidate, lineNumber, "");
@@ -205,6 +201,14 @@ public class Lexer
                 return new PotatoToken(TokenTypesEnum.Identifier, tokenCandidate, lineNumber, tokenCandidate);
         }
     }
+
+    public PotatoToken CreateCloseParenthesesToken(string tokenCandidate,
+                                                   int lineNumber,
+                                                   string tokenValue) =>
+        new(TokenTypesEnum.Sign_CloseParentheses, tokenCandidate, lineNumber, tokenValue);
+
+    private PotatoToken CreateStringTypeValueToken(string value, int lineNumber) =>
+        new(TokenTypesEnum.StringLiteral, value, lineNumber, value);
 
     private static bool IsNumber(string tokenCandidate)
     {

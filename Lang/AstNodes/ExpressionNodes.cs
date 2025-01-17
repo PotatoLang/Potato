@@ -2,9 +2,12 @@ namespace Potato.AstNodes;
 
 public class InFixExpressionNode : IFixExpressionNode
 {
+    public int Group { get; set; }
+    public TokenTypesEnum TokenType { get; set; }
+    public bool IsContinuationPosition { get; set; }
+    public IExpressionNode ParentExpressionNode { get; set; }
     public IExpressionNode? LeftSideNode { get; set; }
     public IExpressionNode? RightSideNode { get; set; }
-    public TokenTypesEnum TokenType { get; set; }
     public ExpressionNodeType ExpressionNodeType { get; set; } = ExpressionNodeType.Infix;
 }
 
@@ -12,7 +15,6 @@ public interface IFixExpressionNode : IExpressionNode
 {
     IExpressionNode? LeftSideNode { get; set; }
     IExpressionNode? RightSideNode { get; set; }
-    TokenTypesEnum TokenType { get; set; }
 }
 
 public interface ITypedLiteralValueNode<PotatoType> : ILiteralValueNode
@@ -28,21 +30,19 @@ public interface ILiteralValueNode : IExpressionNode
     /// <summary>
     ///     The string representation of the value.
     /// </summary>
-    string StringValueLiteral { get; set; }
-
-    /// <summary>
-    ///     The token type representation.
-    /// </summary>
-    string StringTokenLiteral { get; set; }
+    string ValueLiteral { get; set; }
 }
 
 public class IntegerLiteralExpressionNode : ITypedLiteralValueNode<int>
 {
-    /// <inheritdoc />
-    public string StringValueLiteral { get; set; }
+
+    public IExpressionNode ParentExpressionNode { get; set; }
+    public TokenTypesEnum TokenType { get; set; }
+    public int Group { get; set; }
+    public bool IsContinuationPosition { get; set; }
 
     /// <inheritdoc />
-    public string StringTokenLiteral { get; set; }
+    public string ValueLiteral { get; set; }
 
     /// <inheritdoc />
     public int Value { get; set; }
@@ -52,15 +52,22 @@ public class IntegerLiteralExpressionNode : ITypedLiteralValueNode<int>
 
 public class StringLiteralExpressionNode : ITypedLiteralValueNode<string>
 {
+    public TokenTypesEnum TokenType { get; set; }
+    public int Group { get; set; }
+    public bool IsContinuationPosition { get; set; }
     public ExpressionNodeType ExpressionNodeType { get; set; }
-    public string StringValueLiteral { get; set; }
-    public string StringTokenLiteral { get; set; }
+    public string ValueLiteral { get; set; }
+    public IExpressionNode ParentExpressionNode { get; set; }
     public string Value { get; set; }
 }
 
 public interface IExpressionNode
 {
     ExpressionNodeType ExpressionNodeType { get; set; }
+    TokenTypesEnum TokenType { get; set; }
+    int Group { get; set; }
+    bool IsContinuationPosition { get; set; }
+    IExpressionNode? ParentExpressionNode { get; set; }
 }
 
 public enum ExpressionNodeType
