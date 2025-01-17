@@ -7,6 +7,13 @@ public class IntegerAssignmentStatementNode : ITypedAssignmentStatementNode<int>
     public int Value { get; set; }
 }
 
+public class StringAssignmentStatementNode : ITypedAssignmentStatementNode<string>
+{
+    public string VariableLiteral { get; set; }
+    public IExpressionNode? VariableExpressionNode { get; set; }
+    public string Value { get; set; }
+}
+
 public interface ITypedAssignmentStatementNode<PotatoType> : IAssignmentStatementNode
 {
     PotatoType Value { get; set; }

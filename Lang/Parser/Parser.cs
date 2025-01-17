@@ -14,7 +14,6 @@ public partial class Parser
     private readonly ILogger _logger;
 
     private readonly Lexer Lexer;
-    private readonly int position = 0;
 
     public Parser(ITestOutputHelper testOutputHelper)
     {
@@ -40,9 +39,8 @@ public partial class Parser
     {
         PotatoRootAstNode potatoRootRootNode = new();
 
-        (IAssignmentStatementNode VariableStatementNodes, int ContinuationPosition) variableStatements =
-            ParseVariableAssignments(tokens, position);
-        potatoRootRootNode.VariableAssignments.Add(variableStatements.VariableStatementNodes);
+        IAssignmentStatementNode variableStatements = ParseVariableAssignments(tokens, 0);
+        potatoRootRootNode.VariableAssignments.Add(variableStatements);
 
         return potatoRootRootNode;
     }

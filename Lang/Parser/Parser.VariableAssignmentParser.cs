@@ -15,7 +15,7 @@ using AstNodes;
 /// </summary>
 public partial class Parser
 {
-    private (IAssignmentStatementNode IntegerNode, int ContinuationPosition) CreateIntegerAssignmentAstNodes(
+    private IAssignmentStatementNode CreateIntegerAssignmentAstNodes(
         List<PotatoToken> tokens,
         int position)
     {
@@ -24,7 +24,7 @@ public partial class Parser
 
         if (position <= tokens.Count - 1)
         {
-            if (tokens[position].TokenType != TokenTypes.Keyword_Integer)
+            if (tokens[position].TokenType != TokenTypesEnum.Keyword_Integer)
             {
                 ParserHelpers.ThrowParseException(
                     $"Expected {nameof(TokenTypes.Keyword_Integer)} but received {tokens[position].TokenType}",
@@ -42,7 +42,7 @@ public partial class Parser
 
         if (position + 1 <= tokens.Count)
         {
-            if (tokens[position + 1].TokenType != TokenTypes.Identifier)
+            if (tokens[position + 1].TokenType != TokenTypesEnum.Identifier)
             {
                 ParserHelpers.ThrowParseException(
                     $"Excepted {nameof(TokenTypes.Identifier)} token type, but received " +
@@ -63,7 +63,7 @@ public partial class Parser
 
         if (position + 2 <= tokens.Count)
         {
-            if (tokens[position + 2].TokenType != TokenTypes.Sign_Assignment)
+            if (tokens[position + 2].TokenType != TokenTypesEnum.Sign_Assignment)
             {
                 ParserHelpers.ThrowParseException(
                     $"Expected {nameof(TokenTypes.Identifier)} token type, but received " +
@@ -83,69 +83,23 @@ public partial class Parser
         }
 
         // parse the right side of the equal sign where the assignment expressions livea
-        (IExpressionNode AssignmentExpressionNode, int ContinuationPosition) variableAssignmentExpression =
-            ParseExpressions(tokens, position + 3);
-        node.VariableExpressionNode = variableAssignmentExpression.AssignmentExpressionNode;
-        return (
-            node,
-            continuationPosition);
-
-        // if (variableAssignmentExpression.ContinuationPosition <= tokens.Count)
-        // {
-        //     if (tokens[variableAssignmentExpression.ContinuationPosition].TokenType != TokenTypes.IntegerLiteral)
-        //     {
-        //         ParserHelpers.ThrowParseException(
-        //             $"Expected {nameof(TokenTypes.IntegerLiteral)} token type, but received " +
-        //             $"{tokens[variableAssignmentExpression.ContinuationPosition].TokenType}",
-        //             tokens[variableAssignmentExpression.ContinuationPosition].LineNumber,
-        //             variableAssignmentExpression.ContinuationPosition);
-        //     }
-        //     // todo: handle conversion issues
-        //     node.Value = int.Parse(tokens[variableAssignmentExpression.ContinuationPosition].Value);
-        // }
-        // else
-        // {
-        //     ParserHelpers.ThrowParseException(
-        //         $"Expected {nameof(TokenTypes.IntegerLiteral)} token type, but received nothing.",
-        //         0,
-        //         variableAssignmentExpression.ContinuationPosition + 1
-        //     );
-        //
-        // }
-        //
-        // if (variableAssignmentExpression.ContinuationPosition + 1 <= tokens.Count)
-        // {
-        //     if (tokens[variableAssignmentExpression.ContinuationPosition + 1].TokenType != TokenTypes.Sign_Semicolon)
-        //     {
-        //         ParserHelpers.ThrowParseException(
-        //             $"Expected {nameof(TokenTypes.Sign_Semicolon)} token type, but received " +
-        //             $"{tokens[variableAssignmentExpression.ContinuationPosition + 1].TokenType}",
-        //             tokens[variableAssignmentExpression.ContinuationPosition + 1].LineNumber,
-        //             variableAssignmentExpression.ContinuationPosition + 1);
-        //     }
-        // }
-        // else
-        // {
-        //     ParserHelpers.ThrowParseException(
-        //         $"Expected {nameof(TokenTypes.Sign_Semicolon)} token type, but received nothing.",
-        //         0,
-        //         variableAssignmentExpression.ContinuationPosition + 1
-        //     );
-        //
-        // }
-        //
-        // return (
-        //     node,
-        //     continuationPosition);
+        List<PotatoToken> tokensPartial = GetTokensUntil(tokens, position + 3, TokenTypesEnum.Sign_Semicolon);
+        IExpressionNode variableAssignmentExpression =
+            ParseExpressions(tokensPartial);
+        node.VariableExpressionNode = variableAssignmentExpression;
+        return node;
     }
 
-    public (IAssignmentStatementNode AssignmentStatementNode, int ContinuationPosition) ParseVariableAssignments(
+    public IAssignmentStatementNode ParseVariableAssignments(
         List<PotatoToken> tokens, int position)
     {
         switch (tokens[position].TokenType)
         {
-            case TokenTypes.Keyword_Integer:
+            case TokenTypesEnum.Keyword_Integer:
                 return CreateIntegerAssignmentAstNodes(tokens, position);
+
+            // case TokenTypesEnum.Keyword_String:
+            //     return CreateStringAssignmentAstNode(tokens, position);
 
             default:
                 ParserHelpers.ThrowParseException($"{nameof(ParseVariableAssignments)}",
@@ -153,6 +107,104 @@ public partial class Parser
                                                   position);
                 break;
         }
-        return (null, position);
+        return null;
+    }
+
+    private IAssignmentStatementNode CreateStringAssignmentAstNode(
+        List<PotatoToken> tokens,
+        int position)
+    {
+        StringAssignmentStatementNode node = new();
+        int continuationPosition = position;
+        int tokensLength = tokens.Count - 1;
+
+        // checking String presence
+        if (continuationPosition < tokensLength)
+        {
+            if (tokens[continuationPosition].TokenType != TokenTypesEnum.Keyword_String)
+            {
+                ParserHelpers.ThrowParseException(
+                    $"Expected {nameof(TokenTypes.Keyword_String)}, but received {tokens[continuationPosition].TokenType}",
+                    tokens[position - 1].LineNumber,
+                    continuationPosition
+                );
+            }
+            continuationPosition++;
+        }
+        else
+        {
+            ParserHelpers.ThrowParseException(
+                $"Expected {nameof(TokenTypes.Keyword_String)}, but there is no further characters in the code.",
+                tokens[position - 1].LineNumber,
+                position
+            );
+        }
+
+        if (continuationPosition < tokensLength)
+        {
+            if (tokens[continuationPosition].TokenType != TokenTypesEnum.Identifier)
+            {
+                ParserHelpers.ThrowParseException(
+                    $"Expected {nameof(TokenTypes.Identifier)}, but received {tokens[continuationPosition].TokenType}",
+                    tokens[continuationPosition].LineNumber,
+                    continuationPosition
+                );
+            }
+            continuationPosition++;
+        }
+        else
+        {
+            ParserHelpers.ThrowParseException(
+                $"Expected {nameof(TokenTypes.Identifier)}, but there is no further characters in the code.",
+                tokens[continuationPosition].LineNumber,
+                continuationPosition
+            );
+
+        }
+
+        if (continuationPosition < tokensLength)
+        {
+            if (tokens[continuationPosition].TokenType != TokenTypesEnum.Sign_Assignment)
+            {
+                ParserHelpers.ThrowParseException(
+                    $"Expected {nameof(TokenTypes.Sign_Assignment)}, but received {tokens[continuationPosition].TokenType}",
+                    tokens[continuationPosition].LineNumber,
+                    continuationPosition
+                );
+            }
+            continuationPosition++;
+        }
+        else
+        {
+            ParserHelpers.ThrowParseException(
+                $"Expected {nameof(TokenTypes.Sign_Assignment)}, but there is no further characters in the code.",
+                tokens[continuationPosition].LineNumber,
+                continuationPosition
+            );
+        }
+
+        List<PotatoToken> stringAssignmentExpressionTokens = GetTokensUntil(
+            tokens,
+            continuationPosition,
+            TokenTypesEnum.Sign_Semicolon);
+
+        IExpressionNode variableAssignmentExpression = ParseExpressions(stringAssignmentExpressionTokens);
+        node.VariableExpressionNode = variableAssignmentExpression;
+        return node;
+    }
+
+    private List<PotatoToken> GetTokensUntil(List<PotatoToken> tokens, int position, TokenTypesEnum delimiter)
+    {
+        List<PotatoToken> tokensPartial = new();
+        for (int i = position; i < tokens.Count; i++)
+        {
+            if (tokens[i].TokenType == delimiter)
+            {
+                tokensPartial.Add(tokens[i]);
+                break;
+            }
+            tokensPartial.Add(tokens[i]);
+        }
+        return tokensPartial;
     }
 }

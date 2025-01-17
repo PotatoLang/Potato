@@ -4,7 +4,7 @@ using AstNodes;
 
 public static class ParserHelpers
 {
-    public static int Find(List<string> targets, List<PotatoToken> tokens, int position)
+    public static int Find(List<TokenTypesEnum> targets, List<PotatoToken> tokens, int position)
     {
         for (int i = position; i < tokens.Count; i++)
         {
@@ -22,8 +22,8 @@ public static class ParserHelpers
     public static IEqualityExpressionAstNode CreateEqualityExpressionNode(PotatoToken leftHandSideToken,
                                                                           PotatoToken rightHandSideToken)
     {
-        if (leftHandSideToken.TokenType == TokenTypes.IntegerLiteral
-         && rightHandSideToken.TokenType == TokenTypes.IntegerLiteral)
+        if (leftHandSideToken.TokenType == TokenTypesEnum.IntegerLiteral
+         && rightHandSideToken.TokenType == TokenTypesEnum.IntegerLiteral)
         {
             return CreateIntegerEqualityExpressionNode(
                 leftHandSideToken,

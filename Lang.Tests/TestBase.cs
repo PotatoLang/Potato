@@ -45,13 +45,17 @@ public class TestBase
     }
 
     private void CheckVariableAssignmentNodes(
-        List<IAssignmentStatementNode> resultVariableAssignments,
-        List<IAssignmentStatementNode> expectedResultVariableAssignments)
+        List<IAssignmentStatementNode> result,
+        List<IAssignmentStatementNode> expected)
     {
-        foreach (IAssignmentStatementNode expectedAssignment in expectedResultVariableAssignments)
+        if (result.Count == expected.Count && result.Count == 0)
+        {
+            return;
+        }
+        foreach (IAssignmentStatementNode expectedAssignment in expected)
         {
             IAssignmentStatementNode resultAssignment = FindResultAssignmentNode(
-                resultVariableAssignments,
+                result,
                 expectedAssignment.VariableLiteral);
             if (expectedAssignment.VariableExpressionNode != null)
             {
@@ -62,43 +66,51 @@ public class TestBase
         }
     }
 
-    private void CompareExpressionTrees(IExpressionNode? expected, IExpressionNode? result)
+    private void CompareExpressionTrees(IExpressionNode expected, IExpressionNode result)
     {
-        if (expected == null && result == null)
-        {
-            return;
-        }
-        if (expected == null && result != null || expected != null && result == null)
-        {
-            string diffInTreeErrorMessage =
-                $"""
-                 There is an unexpected diff between the trees.
-                 expected is {expected} and result is {result}
-                 """;
-            true.Should().BeFalse(diffInTreeErrorMessage);
-        }
         string msg = $"""
-                      expected {nameof(IExpressionNode)} type is {expected.GetType()};
-                      result {nameof(IExpressionNode)} type is {result.GetType()};
+                      expected {nameof(IExpressionNode)} type is {expected!.GetType()};
+                      result {nameof(IExpressionNode)} type is {result!.GetType()};
                       """;
         result.GetType().Should().Be(expected.GetType(), msg);
 
-        Type? nodeTypeExpected = expected?.GetType();
-        if (nodeTypeExpected == typeof(IFixExpressionNode))
+        if (expected.GetType() == typeof(InFixExpressionNode))
         {
-            IFixExpressionNode expectedNode = (IFixExpressionNode)expected;
-            IFixExpressionNode resultNode = (IFixExpressionNode)result;
-            CompareExpressionTrees(expectedNode.LeftSideNode, resultNode.LeftSideNode);
-            CompareExpressionTrees(expectedNode.RightSideNode, resultNode.RightSideNode);
+            InFixExpressionNode expectedNode = (InFixExpressionNode)expected;
+            InFixExpressionNode resultNode = (InFixExpressionNode)result;
+
+            if (expectedNode.LeftSideNode == null)
+            {
+                string nullMsgLeftSide = "Left side node expected to be null.";
+                resultNode.LeftSideNode.Should().BeNull(nullMsgLeftSide);
+            }
+            else
+            {
+                resultNode.LeftSideNode!.TokenType.Should().Be(expectedNode.LeftSideNode.TokenType);
+                resultNode.LeftSideNode!.ExpressionNodeType.Should().Be(expectedNode.LeftSideNode.ExpressionNodeType);
+                CompareExpressionTrees(expectedNode.LeftSideNode, resultNode.LeftSideNode);
+            }
+
+            if (expectedNode.RightSideNode == null)
+            {
+                string nullMsgRightSide = "Right side node expected to be null.";
+                resultNode.RightSideNode.Should().BeNull(null, nullMsgRightSide);
+            }
+            else
+            {
+                resultNode.RightSideNode!.TokenType.Should().Be(expectedNode.RightSideNode.TokenType);
+                resultNode.RightSideNode!.ExpressionNodeType.Should().Be(expectedNode.RightSideNode.ExpressionNodeType);
+                CompareExpressionTrees(expectedNode.RightSideNode, resultNode.RightSideNode);
+            }
         }
-        if (nodeTypeExpected == typeof(IntegerLiteralExpressionNode))
+
+        if (expected.GetType() == typeof(IntegerLiteralExpressionNode))
         {
             IntegerLiteralExpressionNode expectedNode = (IntegerLiteralExpressionNode)expected;
             IntegerLiteralExpressionNode resultNode = (IntegerLiteralExpressionNode)result;
             resultNode.Value.Should().Be(expectedNode.Value);
             resultNode.ExpressionNodeType.Should().Be(expectedNode.ExpressionNodeType);
-            resultNode.StringTokenLiteral.Should().Be(expectedNode.StringTokenLiteral);
-            resultNode.StringValueLiteral.Should().Be(expectedNode.StringValueLiteral);
+            resultNode.ValueLiteral.Should().Be(expectedNode.ValueLiteral);
         }
     }
 
@@ -171,7 +183,7 @@ public class TestBase
                 .Append(infixNode.ExpressionNodeType)
                 .Append(' ')
                 .Append("token type:")
-                .Append(infixNode.TokenTypeStringLiteral)
+                .Append(infixNode.TokenType)
                 .Append('\n')
                 .Append('|')
                 .Append(GenerateDepth(depth))

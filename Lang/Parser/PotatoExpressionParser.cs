@@ -42,9 +42,9 @@ public class PotatoExpressionParser
         List<PotatoToken> tokens,
         int position)
     {
-        List<string> targets = new() {
-            TokenTypes.Sign_DoubleEquality,
-            TokenTypes.Sign_BangEquality,
+        List<TokenTypesEnum> targets = new() {
+            TokenTypesEnum.Sign_DoubleEquality,
+            TokenTypesEnum.Sign_BangEquality,
         };
         int targetPosition = ParserHelpers.Find(targets, tokens, position);
 
@@ -59,8 +59,8 @@ public class PotatoExpressionParser
 
         if (leftHandSideToken.TokenType != rightHandSideToken.TokenType
             // to protect the code from the identifier cases
-         || leftHandSideToken.TokenType == TokenTypes.Identifier &&
-            rightHandSideToken.TokenType == TokenTypes.Identifier)
+         || leftHandSideToken.TokenType == TokenTypesEnum.Identifier &&
+            rightHandSideToken.TokenType == TokenTypesEnum.Identifier)
         {
             // erroring out
         }
